@@ -18,6 +18,10 @@ app.get("/login",(req,res)=>{
     res.render('login')
 })
 
+app.get("/form",(req,res)=>{
+    res.render('form')
+})
+
 app.listen(port,()=>{
     console.log(`Listening on port ${port}`);
 })
