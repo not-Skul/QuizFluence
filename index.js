@@ -2,7 +2,7 @@ import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import 'dotenv/config';
-import { GoogleGenerativeAI,SchemaType } from '@google/generative-ai';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import bodyParser from 'body-parser';
 import axios from 'axios';
 
@@ -20,7 +20,6 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 app.use(express.json());
 const parseQuizResponse = (response) => {
     try {
-      console.log('Raw response:', response); // Debug log
   
       // Remove all markdown code block indicators and any whitespace before the JSON
       let cleanResponse = response
@@ -29,9 +28,7 @@ const parseQuizResponse = (response) => {
         // Remove trailing commas at the end of arrays/objects
         .replace(/,(\s*})/g, '$1')
         .trim();                              // Remove extra whitespace
-  
-      console.log('Cleaned response:', cleanResponse); // Debug log
-  
+
       // Find the JSON object boundaries
       const startIndex = cleanResponse.indexOf('{');
       const endIndex = cleanResponse.lastIndexOf('}') + 1;
@@ -83,27 +80,16 @@ app.get("/login",(req,res)=>{
 app.get('/api/quiz', async (req, res) => {
     try {
       const { topic = 'general knowledge', numQuestions = 5 } = req.query;
-  
-      // Get Gemini model
       const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
-  
-      // Generate prompt
       const prompt = generateQuizPrompt(topic, numQuestions);
-  
-      // Get response from Gemini
       const result = await model.generateContent(prompt);
       const response = await result.response;
       const text = response.text();
-  
-      // Parse and validate the response
       const quizData = parseQuizResponse(text);
-  
-      // Send the formatted quiz data
       res.json({
         success: true,
         data: quizData
       });
-  
     } catch (error) {
       console.error('Error generating quiz:', error);
       res.status(500).json({
@@ -114,23 +100,22 @@ app.get('/api/quiz', async (req, res) => {
     }
   });
 
-  app.get('/api/categories', (req, res) => {
-    const categories = [
-      'General Knowledge',
-      'Science',
-      'History',
-      'Geography',
-      'Technology',
-      'Sports',
-      'Arts',
-      'Literature'
-    ];
-    
-    res.json({
-      success: true,
-      data: categories
-    });
+app.get('/api/categories', (req, res) => {
+  const categories = [
+    'General Knowledge',
+    'Science',
+    'History',
+    'Geography',
+    'Technology',
+    'Sports',
+    'Arts',
+    'Literature'
+  ];
+  res.json({
+    success: true,
+    data: categories
   });
+});
 
 app.get("/ai",async(req,res)=>{
     const data = await axios.get("http://localhost:8080/api/quiz?topic=sql&numQuestions=10");
