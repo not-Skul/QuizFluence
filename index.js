@@ -117,14 +117,18 @@ app.get('/api/categories', (req, res) => {
   });
 });
 
-app.get("/ai",async(req,res)=>{
-    const data = await axios.get("http://localhost:8080/api/quiz?topic=sql&numQuestions=10");
-    const questions = data.data.data;
-    // const result = JSON.stringify(questions)
-    // console.log(result)
-    // res.render('quiz',{text:result});
-    res.json(questions)
-})
+
+app.get('/questions', async (req, res) => {
+    try {
+        const data = await axios.get("http://localhost:8080/api/quiz?topic=geography&numQuestions=10");
+        const questions = data.data.data.questions;
+        console.log(questions)
+      res.render('questions', { questions });
+    } catch (error) {
+      console.error('Error fetching questions:', error);
+      res.status(500).send('Error fetching questions');
+    }
+  });
 
 app.use((err, req, res, next) => {
     console.error(err.stack);

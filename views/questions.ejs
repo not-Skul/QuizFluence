@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Questions</title>
+    <style>
+      .question {
+        margin-bottom: 20px;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      .question h3 {
+        margin-top: 0;
+      }
+      .options {
+        list-style-type: none;
+        padding: 0;
+      }
+      .options li {
+        margin-bottom: 10px;
+      }
+      .options li button {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        background-color: #f2f2f2;
+        border: none;
+        border-radius: 5px;
+        text-align: left;
+        cursor: pointer;
+      }
+      .options li button:hover {
+        background-color: #e6e6e6;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Questions</h1>
+    <% questions.forEach(function(question) { %>
+      <div class="question">
+        <h3><%= question.question %></h3>
+        <ul class="options">
+          <% question.options.forEach(function(option) { %>
+            <li><button><%= option %></button></li>
+            
+          <% }); %>
+        </ul>
+        <%= question.correctAnswer %>
+      </div>
+    <% }); %>
+  </body>
+</html>
