@@ -1,52 +1,63 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Questions</title>
-    <style>
-      .question {
-        margin-bottom: 20px;
-        padding: 20px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-      }
-      .question h3 {
-        margin-top: 0;
-      }
-      .options {
-        list-style-type: none;
-        padding: 0;
-      }
-      .options li {
-        margin-bottom: 10px;
-      }
-      .options li button {
-        display: block;
-        width: 100%;
-        padding: 10px;
-        background-color: #f2f2f2;
-        border: none;
-        border-radius: 5px;
-        text-align: left;
-        cursor: pointer;
-      }
-      .options li button:hover {
-        background-color: #e6e6e6;
-      }
-    </style>
-  </head>
-  <body>
-    <h1>Questions</h1>
-    <% questions.forEach(function(question) { %>
-      <div class="question">
-        <h3><%= question.question %></h3>
-        <ul class="options">
-          <% question.options.forEach(function(option) { %>
-            <li><button><%= option %></button></li>
-            
-          <% }); %>
-        </ul>
-        <%= question.correctAnswer %>
-      </div>
-    <% }); %>
-  </body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCQ Questions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-indigo-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-8">
+            Multiple Choice Questions
+        </h1>
+        
+        <div class="space-y-6">
+            <% questions.forEach((question) => { %>
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="mb-4">
+                        <h2 class="text-xl font-semibold text-gray-700">
+                            Question <%= question.id%>: <%= question.question %>
+                        </h2>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <% question.options.forEach((option, optionIndex) => { %>
+                            <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                                <input 
+                                    type="radio" 
+                                    name="question<%= question.id %>" 
+                                    value="<%= option %>"
+                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500"
+                                >
+                                <span class="ml-3 text-gray-700">
+                                    <%= option %>
+                                </span>
+                            </label>
+                        <% }); %>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+
+        <div class="mt-8 flex justify-center">
+            <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                Submit Answers
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Add this if you want to handle form submission
+        <!-- document.querySelector('button[type="submit"]').addEventListener('click', function() {
+            const answers = {};
+            <% questions.forEach(question => { %>
+                const selected = document.querySelector(input[name="question<%= question.id %>"]:checked);
+                answers[<%= question.id %>] = selected ? selected.value : null;
+            <% }); %>
+            console.log('Selected answers:', answers);
+            // Here you can add code to submit answers to your backend
+        }); -->
+    </script>
+</body>
 </html>
