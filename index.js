@@ -73,6 +73,10 @@ app.get("/home",(req,res)=>{
     res.render('home');
 })
 
+app.get("/form",(req,res)=>{
+    res.render('form')
+})
+
 app.get("/login",(req,res)=>{
     res.render('login')
 })
@@ -123,7 +127,22 @@ app.get('/questions', async (req, res) => {
         const data = await axios.get("http://localhost:8080/api/quiz?topic=geography&numQuestions=10");
         const questions = data.data.data.questions;
         console.log(questions)
-      res.render('questions', { questions });
+      res.render('questions2', { questions });
+    } catch (error) {
+      console.error('Error fetching questions:', error);
+      res.status(500).send('Error fetching questions');
+    }
+  });
+
+  app.post('/create-quiz', async (req, res) => {
+    try {
+        const topic = req.body.topic;
+        const num = req.body.questionCount;
+        console.log(topic);
+        const data = await axios.get(`http://localhost:8080/api/quiz?topic=${topic}&numQuestions=${num}`);
+        const questions = data.data.data.questions;
+        console.log(questions)
+      res.render('questions2', { questions:questions });
     } catch (error) {
       console.error('Error fetching questions:', error);
       res.status(500).send('Error fetching questions');
