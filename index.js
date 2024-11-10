@@ -119,6 +119,13 @@ app.get('/api/quiz', async (req, res) => {
     }
   });
 
+  app.post("/result",(req,res)=>{
+    console.log(req.body.question1);
+    res.render('result',{score: 7,  // Replace with actual score
+      totalQuestions: 10  // Replace with actual total
+    });
+  })
+
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).json({
