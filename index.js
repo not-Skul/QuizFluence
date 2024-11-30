@@ -6,6 +6,18 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import bodyParser from 'body-parser';
 import axios from 'axios';
 import session from 'express-session'; // Add this import
+import mongoose from 'mongoose';
+import QuizFluence from "./models/schema.js"
+
+// mongodb connection
+
+const connectDB = async()=>{
+    await mongoose.connect(`${process.env.MONGO_URL}`)
+
+    console.log(`the db is connected with ${mongoose.connection.host}`)
+}
+
+connectDB()
 
 const app = express();
 const port = 8080;
@@ -83,6 +95,11 @@ Return the response in the following JSON format only:
 app.get("/home",(req,res)=>{
     res.render('home');
 });
+
+app.get('/users',async(req,res)=>{
+    let allusers = await QuizFluence.find({});
+    res.send(allusers[2]["username"]);
+ })
 
 app.get("/form",(req,res)=>{
     res.render('form');
@@ -206,6 +223,12 @@ app.use((err, req, res, next) => {
 
 app.get("/register",(req,res)=>{
     res.render('signup')
+})
+
+app.post("/newuser",async(req,res)=>{
+    let {username, password} = req.body;
+    let newBlog = await QuizFluence.create({username, password});
+    res.redirect('form')
 })
 
 app.listen(port,()=>{
