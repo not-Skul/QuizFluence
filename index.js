@@ -76,8 +76,8 @@ const parseQuizResponse = (response) => {
   }
 };
 
-const generateQuizPrompt = (topic, numQuestions) => {
-return `Generate a quiz about ${topic} with ${numQuestions} questions. 
+const generateQuizPrompt = (topic, numQuestions,diff) => {
+return `Generate a quiz of ${diff} level about ${topic} with ${numQuestions} questions. 
 Return the response in the following JSON format only:
 {
   "topic": "${topic}",
@@ -98,7 +98,7 @@ app.get("/home",(req,res)=>{
 
 app.get('/users',async(req,res)=>{
     let allusers = await QuizFluence.find({});
-    res.send(allusers[2]["username"]);
+    res.send(allusers["username"]);
  })
 
 app.get("/form",(req,res)=>{
@@ -111,9 +111,9 @@ app.get("/login",(req,res)=>{
 
 app.get('/api/quiz', async (req, res) => {
     try {
-        const { topic = 'general knowledge', numQuestions = 5 } = req.query;
+        const { topic, numQuestions,diff} = req.query;
         const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
-        const prompt = generateQuizPrompt(topic, numQuestions);
+        const prompt = generateQuizPrompt(topic, numQuestions,diff);
         const result = await model.generateContent(prompt);
         const response = await result.response;
         const text = response.text();
@@ -136,7 +136,8 @@ app.post('/create-quiz', async (req, res) => {
     try {
         const topic = req.body.topic;
         const num = req.body.questionCount;
-        const response = await axios.get(`http://localhost:8080/api/quiz?topic=${topic}&numQuestions=${num}`);
+        const diff = req.body.Dlevel;
+        const response = await axios.get(`http://localhost:8080/api/quiz?topic=${topic}&numQuestions=${num}&diff=${diff}`);
         const quizData = response.data.data;
         
         // Store quiz data in session for later result calculation
@@ -187,16 +188,21 @@ function calculateResults(userAnswers, questions) {
         score: 0
     };
     
-    questions.forEach((question, index) => {
-        // Get user's answer for this question (handle both array and single answer formats)
-        const userAnswer = userAnswers[`question${question.id}`];
-        const isCorrect = userAnswer === question.correctAnswer;
+    questions.forEach((question) => {
+        // Flexible answer retrieval
+        const userAnswer = userAnswers[question.id] || userAnswers[`question${question.id}`];
+        
+        // Normalize answers 
+        const normalizedUserAnswer = userAnswer ? String(userAnswer).trim() : null;
+        const normalizedCorrectAnswer = String(question.correctAnswer).trim();
+        
+        const isCorrect = normalizedUserAnswer === normalizedCorrectAnswer;
         
         results.detailedResults.push({
             questionNumber: question.id,
             question: question.question,
-            userAnswer: userAnswer || 'No answer provided',
-            correctAnswer: question.correctAnswer,
+            userAnswer: normalizedUserAnswer || 'No answer provided',
+            correctAnswer: normalizedCorrectAnswer,
             isCorrect: isCorrect
         });
         
@@ -207,7 +213,8 @@ function calculateResults(userAnswers, questions) {
         }
     });
     
-    results.score = Math.round(results.correctAnswers / results.totalQuestions);
+    // Score is now simply the number of correct answers
+    results.score = results.correctAnswers;
     
     return results;
 }
