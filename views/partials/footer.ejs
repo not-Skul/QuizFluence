@@ -1,3 +1,42 @@
-
-
-
+<!-- views/partials/footer.ejs -->
+<footer class="bg-white border-t py-12 mt-4">
+    <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="text-center md:text-left">
+        <h4 class="font-bold text-lg mb-4 text-gray-800">Quizfluence</h4>
+        <p class="text-gray-600 text-sm">
+          Empowering learning through interactive quizzes and engaging educational experiences.
+        </p>
+      </div>
+      
+      <div class="text-center">
+        <h4 class="font-bold text-lg mb-4 text-gray-800">Quick Links</h4>
+        <nav class="flex flex-col space-y-2">
+          <a href="/quizzes" class="text-gray-600 hover:text-blue-600 transition">Quizzes</a>
+          <a href="/categories" class="text-gray-600 hover:text-blue-600 transition">Categories</a>
+          <a href="/about" class="text-gray-600 hover:text-blue-600 transition">About Us</a>
+          <a href="/contact" class="text-gray-600 hover:text-blue-600 transition">Contact</a>
+        </nav>
+      </div>
+      
+      <div class="text-center md:text-right">
+        <h4 class="font-bold text-lg mb-4 text-gray-800">Connect With Us</h4>
+        <div class="flex justify-center md:justify-end space-x-4">
+          <a href="#" class="text-gray-600 hover:text-blue-600 transition">
+            <i class="fab fa-facebook"></i>
+          </a>
+          <a href="#" class="text-gray-600 hover:text-blue-600 transition">
+            <i class="fab fa-twitter"></i>
+          </a>
+          <a href="#" class="text-gray-600 hover:text-blue-600 transition">
+            <i class="fab fa-instagram"></i>
+          </a>
+        </div>
+        <p class="mt-4 text-gray-600 text-sm">
+          © <%= new Date().getFullYear() %> Quizfluence. All Rights Reserved.
+        </p>
+      </div>
+    </div>
+  </footer>
+  
+  <!-- Note: Include Font Awesome for social icons -->
+  <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>

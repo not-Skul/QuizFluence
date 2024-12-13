@@ -228,14 +228,18 @@ app.use((err, req, res, next) => {
     });
 });
 
-app.get("/register",(req,res)=>{
+app.get("/",(req,res)=>{
     res.render('signup')
+})
+
+app.get('/about',(req,res)=>{
+    res.render('about')
 })
 
 app.post("/newuser",async(req,res)=>{
     let {username, password} = req.body;
     let newBlog = await QuizFluence.create({username, password});
-    res.redirect('form')
+    res.redirect('home')
 })
 
 app.listen(port,()=>{
